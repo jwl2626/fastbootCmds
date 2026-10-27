@@ -1,0 +1,74 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build fastbootCmds",
+      "type": "process",
+      "command": "D:/mingw64/bin/g++.exe",
+      "args": [
+        "-std=c++17",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-g",
+        "-Isrc",
+        "src/main.cpp",
+        "src/winusb_fastboot.cpp",
+        "src/fastboot_client.cpp",
+        "src/usb_path_windows.cpp",
+        "-lsetupapi",
+        "-lcfgmgr32",
+        "-lwinusb",
+        "-lshell32",
+        "-static",
+        "-static-libgcc",
+        "-static-libstdc++",
+        "-o",
+        "${workspaceFolder}/fastbootCmds.exe"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "build fastbootCmds (no Werror)",
+      "type": "process",
+      "command": "D:/mingw64/bin/g++.exe",
+      "args": [
+        "-std=c++17",
+        "-O0",
+        "-g",
+        "-Isrc",
+        "src/main.cpp",
+        "src/winusb_fastboot.cpp",
+        "src/fastboot_client.cpp",
+        "src/usb_path_windows.cpp",
+        "-lsetupapi",
+        "-lcfgmgr32",
+        "-lwinusb",
+        "-lshell32",
+        "-static",
+        "-static-libgcc",
+        "-static-libstdc++",
+        "-o",
+        "${workspaceFolder}/fastbootCmds.exe"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+# 构建产物（发布时请用 GitHub Release 附带 exe，不要提交进仓库）
+build/
+out/
+dist/
+*.o
+*.obj
+*.exe
+*.dll
+*.lib
+*.a
+*.pdb
+*.ilk
+*.exp
+*.res
+*.map
+
+# IDE / 编辑器（保留共享的 VS Code 配置，忽略个人本地配置）
+.vscode/*
+!.vscode/tasks.json
+!.vscode/c_cpp_properties.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.user
+*.suo
+*.swp
+
+# 系统垃圾文件
+Thumbs.db
+Desktop.ini
+.DS_Store
