@@ -31,3 +31,7 @@ dist/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Python（调试界面）
+__pycache__/
+*.py[cod]
