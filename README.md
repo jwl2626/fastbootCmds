@@ -1,5 +1,8 @@
 # fastbootCmds
 
+[![build](https://github.com/jwl2626/fastbootCmds/actions/workflows/build.yml/badge.svg)](https://github.com/jwl2626/fastbootCmds/actions/workflows/build.yml)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Windows 下按 **USB 物理端口（hub/index）** 对一台或多台 Android fastboot 设备执行命令的命令行工具。
 
 不依赖 `fastboot.exe`，直接通过 **WinUSB** 与设备的 fastboot 接口通信，因此**没有写 SN 的设备也能精确区分**——同一个 Hub 上插多台样机，可以分别刷写、互不干扰。
@@ -25,6 +28,8 @@ fastbootCmds devices
 ```
 
 设备必须使用 **WinUSB** 驱动（安装 Google USB Driver 或厂商 fastboot 驱动）。如果 `fastbootCmds devices` 看不到设备、但 `fastboot.exe devices` 能看到，多半是驱动或接口类型问题。
+
+![fastbootCmds 用法](docs/screenshot.png)
 
 ## 目录
 

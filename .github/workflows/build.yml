@@ -1,0 +1,62 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  mingw:
+    name: MinGW-w64 构建
+    runs-on: windows-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 MSYS2 / MinGW-w64
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc
+
+      - name: 编译器版本
+        shell: msys2 {0}
+        run: g++ --version | head -n 1
+
+      - name: 编译
+        shell: msys2 {0}
+        run: |
+          g++ -std=c++17 -O2 -Wall -Wextra -Werror -Isrc \
+            src/main.cpp \
+            src/winusb_fastboot.cpp \
+            src/fastboot_client.cpp \
+            src/usb_path_windows.cpp \
+            -lsetupapi -lcfgmgr32 -lwinusb -lshell32 \
+            -static -static-libgcc -static-libstdc++ \
+            -o fastbootCmds.exe
+
+      - name: 冒烟测试（打印用法）
+        shell: msys2 {0}
+        run: |
+          ./fastbootCmds.exe | tee usage.txt
+          grep -q "hub/index" usage.txt
+
+      - name: 冒烟测试（无设备时返回非零）
+        shell: msys2 {0}
+        run: |
+          if ./fastbootCmds.exe devices; then
+            echo "unexpected: devices 在无硬件环境下返回了 0"
+            exit 1
+          else
+            echo "devices 返回非零，符合预期（未连接设备）"
+          fi
+
+      - name: 上传产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: fastbootCmds-win64
+          path: fastbootCmds.exe
+          if-no-files-found: error
