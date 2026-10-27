@@ -141,6 +141,8 @@ python tools\fastboot_gui.py
 
 | 现象 | 原因与处理 |
 | --- | --- |
+| 点 F5 后黑窗一闪就没（“闪退”） | 选错了配置：跑成了 ①②③（C++ 版 exe，打印用法后 0.05 秒退出）。从 F5 右侧下拉里**明确选 ⑥** |
+| 调试界面时提示 `debugpy` 不存在 | 装 **Python Debugger** 扩展（`ms-python.debugpy`，自带 debugpy，不需要 pip 联网安装） |
 | 断点是**空心灰圈**，悬停提示 “No symbols” | 用了 release exe 或没带 `-g`。用 `build (debug)`，并确认 F5 选的是 ①/②/③ |
 | 变量显示 `<optimized out>` | `-O2` 优化掉了。换 `-O0` 的 debug 构建 |
 | `Unable to start debugging. Unable to establish a connection to GDB` | `miDebuggerPath` 不对。确认 `D:\mingw64\bin\gdb.exe` 存在；换了 MinGW 目录就同步改 `launch.json` |

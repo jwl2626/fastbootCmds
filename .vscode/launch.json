@@ -77,13 +77,19 @@
       ]
     },
     {
-      "name": "⑥ 调试调试界面本身（Python）",
+      "name": "⑥ 调试调试界面（Python / PySide6）",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/tools/fastboot_gui.py",
+      "python": "${command:python.interpreterPath}",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
-      "justMyCode": true
+      "justMyCode": true,
+      "stopOnEntry": false,
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1"
+      }
     }
   ]
 }
