@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build fastbootCmds",
+      "label": "build (release)",
       "type": "process",
       "command": "D:/mingw64/bin/g++.exe",
       "args": [
@@ -27,22 +27,44 @@
         "-o",
         "${workspaceFolder}/fastbootCmds.exe"
       ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
+      "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": ["$gcc"],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "clear": true
-      }
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true }
     },
     {
-      "label": "build fastbootCmds (no Werror)",
+      "label": "build (debug)",
+      "type": "process",
+      "command": "D:/mingw64/bin/g++.exe",
+      "args": [
+        "-std=c++17",
+        "-O0",
+        "-g3",
+        "-ggdb",
+        "-Wall",
+        "-Wextra",
+        "-Isrc",
+        "src/main.cpp",
+        "src/winusb_fastboot.cpp",
+        "src/fastboot_client.cpp",
+        "src/usb_path_windows.cpp",
+        "-lsetupapi",
+        "-lcfgmgr32",
+        "-lwinusb",
+        "-lshell32",
+        "-static",
+        "-static-libgcc",
+        "-static-libstdc++",
+        "-o",
+        "${workspaceFolder}/fastbootCmds_dbg.exe"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$gcc"],
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true }
+    },
+    {
+      "label": "build (no Werror)",
       "type": "process",
       "command": "D:/mingw64/bin/g++.exe",
       "args": [
@@ -64,9 +86,7 @@
         "-o",
         "${workspaceFolder}/fastbootCmds.exe"
       ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
+      "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": ["$gcc"],
       "group": "build"
     }

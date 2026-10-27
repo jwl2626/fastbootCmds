@@ -21,6 +21,7 @@ dist/
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/settings.json
+!.vscode/selftest.gdb
 .idea/
 *.user
 *.suo

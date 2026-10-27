@@ -40,6 +40,7 @@ fastbootCmds devices
 - [5. 构建](#5-构建)
 - [6. 当前限制](#6-当前限制)
 - [7. 验证状态](#7-验证状态)
+- [8. 开发与调试](#8-开发与调试)
 
 ---
 
@@ -150,7 +151,7 @@ build.bat
 2. 安装扩展 **C/C++**（`ms-vscode.cpptools`，打开文件夹时会推荐）。
 3. 按 `Ctrl+Shift+B`，选择：
    ```text
-   build fastbootCmds
+   build (release)
    ```
    或菜单 **Terminal → Run Build Task**。
 4. 生成 `fastbootCmds.exe`，再复制到 PATH 目录。
@@ -162,7 +163,7 @@ build.bat
 如果 `-Werror` 因为编译器版本报警告，使用任务：
 
 ```text
-build fastbootCmds (no Werror)
+build (no Werror)
 ```
 
 或手工：
@@ -197,6 +198,32 @@ g++ -std=c++17 -O2 -Wall -Wextra -Werror -Isrc ^
 - `fastbootCmds devices` 在无设备时返回明确错误。
 - USB 路径 helper 在真实 USB 设备上解析出 `usb:1D00:0-1.3` 等路径。
 - **尚未在真机 fastboot 上验证 `getvar` / `flash`**，欢迎反馈实际机型与结果。
+
+---
+
+## 8. 开发与调试
+
+仓库自带 VS Code 配置（`.vscode/tasks.json`、`launch.json`），不用手写 JSON：
+
+| 入口 | 说明 |
+| --- | --- |
+| `Ctrl+Shift+B` | 构建 `build (release)` |
+| `F5` → ① ② ③ | 源码级调试（断点、变量、调用栈），③ 的 `args` 可改成任意命令 |
+| `F5` → ④ | 直接调试现成的 `fastbootCmds.exe`，不重新编译 |
+| `F5` → ⑤ | 附加到运行中的进程（界面调起它时用） |
+| `F5` → ⑥ | 调试 PySide6 调试界面本身 |
+
+调试构建输出 `fastbootCmds_dbg.exe`（`-O0 -g3`），不会覆盖发布用的 `fastbootCmds.exe`。
+
+**界面调试台**（PySide6，`tools/fastboot_gui.py`，只用标准库 + PySide6）：
+
+```bat
+python tools\fastboot_gui.py
+```
+
+选命令、填 `hub index`、挑镜像文件，点「运行」即可看到完整 argv、实时输出、退出码、耗时和**子进程 PID**——PID 可以直接拿到 VS Code 里 attach。
+
+完整说明（含断点位置建议、快捷键、排错表）见 **[docs/DEBUGGING.md](docs/DEBUGGING.md)**。
 
 ---
 
