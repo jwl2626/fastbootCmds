@@ -13,13 +13,22 @@
 #include <string>
 #include <vector>
 
-// MinGW's cfgmgr32.h is missing the Vista+ property API declaration.
+// MinGW 的 cfgmgr32.h 在旧版本（如 GCC 8）里缺少 Vista+ 的 property API 声明，
+// 新版本（如 GCC 16）已经自带。重复声明会触发 -Wattributes，
+// 这里仅在编译期屏蔽这一条警告，调用与链接行为完全不变。
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#endif
 extern "C" CONFIGRET WINAPI CM_Get_DevNode_PropertyW(DEVINST dnDevInst,
                                                      const DEVPROPKEY* property_key,
                                                      DEVPROPTYPE* property_type,
                                                      PBYTE property_buffer,
                                                      PULONG property_buffer_size,
                                                      ULONG flags);
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 namespace fastboot {
 namespace {
