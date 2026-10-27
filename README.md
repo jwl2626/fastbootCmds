@@ -221,6 +221,8 @@ g++ -std=c++17 -O2 -Wall -Wextra -Werror -Isrc ^
 python tools\fastboot_gui.py
 ```
 
+![fastbootCmds 调试台](docs/gui.png)
+
 选命令、填 `hub index`、挑镜像文件，点「运行」即可看到完整 argv、实时输出、退出码、耗时和**子进程 PID**——PID 可以直接拿到 VS Code 里 attach。
 
 完整说明（含断点位置建议、快捷键、排错表）见 **[docs/DEBUGGING.md](docs/DEBUGGING.md)**。

@@ -180,6 +180,7 @@ class MainWindow(QMainWindow):
         # 操作
         row_btn = QHBoxLayout()
         self.btn_run = QPushButton("运行  (Ctrl+Enter)")
+        self.btn_run.setObjectName("run")
         self.btn_run.setDefault(True)
         self.btn_run.clicked.connect(self.run_command)
         btn_clear = QPushButton("清空")
@@ -333,6 +334,38 @@ class MainWindow(QMainWindow):
         self.sp_port.setValue(int(self._settings.value("port", 3)))
 
 
+def apply_style(app: QApplication) -> None:
+    app.setStyle("Fusion")
+    app.setStyleSheet(
+        """
+        QWidget { font-size: 13px; }
+        QGroupBox {
+            font-weight: 600;
+            margin-top: 10px;
+            padding-top: 6px;
+            border: 1px solid #d6d9de;
+            border-radius: 6px;
+        }
+        QGroupBox::title {
+            subcontrol-origin: margin;
+            left: 10px;
+            padding: 0 4px;
+            background-color: #efefef;
+        }
+        QPushButton { padding: 5px 14px; }
+        QPushButton#run {
+            background: #0a66c2;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 7px 20px;
+            font-weight: 600;
+        }
+        QPushButton#run:disabled { background: #9db9d8; }
+        """
+    )
+
+
 def smoke() -> int:
     """无窗口自检：不显示界面，跑一次 devices，验证 argv 与进程链路。"""
     app = QApplication(sys.argv)
@@ -359,7 +392,7 @@ def main() -> int:
         return smoke()
 
     app = QApplication(sys.argv)
-    app.setStyle("Fusion")
+    apply_style(app)
     win = MainWindow()
     win.show()
     return app.exec()

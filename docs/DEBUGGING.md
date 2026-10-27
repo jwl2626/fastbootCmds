@@ -106,6 +106,8 @@ D:\mingw64\bin\gdb.exe    调试器
 python tools\fastboot_gui.py
 ```
 
+![调试台](gui.png)
+
 界面把命令行参数可视化：选命令、选 `hub index`、挑镜像文件，点“运行”就能看到完整 argv、实时输出、退出码、耗时和**子进程 PID**。
 
 调试界面本身：`F5` → ⑥，就能在 `fastboot_gui.py` 里下 Python 断点（比如 `run_command`、`_on_finished`），观察 QProcess 的启动与信号。
