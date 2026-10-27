@@ -1,8 +1,40 @@
-# fastbootCmds.exe
+# fastbootCmds
 
-Windows 下按 **USB 物理端口（hub/index）** 对一台或多台 Android fastboot 设备执行命令的小工具。
+Windows 下按 **USB 物理端口（hub/index）** 对一台或多台 Android fastboot 设备执行命令的命令行工具。
 
-它不是 Python，也不依赖 `fastboot.exe`：直接通过 WinUSB 与设备的 fastboot 接口通信，因此设备没有写 SN 也可以区分。
+不依赖 `fastboot.exe`，直接通过 **WinUSB** 与设备的 fastboot 接口通信，因此**没有写 SN 的设备也能精确区分**——同一个 Hub 上插多台样机，可以分别刷写、互不干扰。
+
+## 为什么不用 `fastboot.exe`
+
+Windows 上原版 `fastboot.exe` 的 `device_path` 是空的，`fastboot -s usb:1D00:0-1.3 ...` 这种按物理端口指定设备的写法不可用；多设备并行时只能靠 SN 区分，而产线上大量设备 SN 相同或根本没有 SN。
+
+| | `fastboot.exe` | `fastbootCmds` |
+| --- | --- | --- |
+| 选择设备 | `-s <SN>` | `hub index`（USB 物理端口） |
+| 无 SN 设备 | 无法区分 | 可区分 |
+| 多设备 | 开多个窗口 / 脚本串行 | 一条命令，多线程并行 |
+| 依赖 | 自身 | 仅需 WinUSB 驱动 |
+
+## 快速开始
+
+```bat
+:: 1. 获取 exe：从 Releases 下载，或自行编译（见「构建」）
+:: 2. 放到任意 PATH 目录，例如 D:\platform-tools
+:: 3. 确认能看到设备
+fastbootCmds devices
+```
+
+设备必须使用 **WinUSB** 驱动（安装 Google USB Driver 或厂商 fastboot 驱动）。如果 `fastbootCmds devices` 看不到设备、但 `fastboot.exe devices` 能看到，多半是驱动或接口类型问题。
+
+## 目录
+
+- [1. 命令格式](#1-命令格式)
+- [2. 支持的命令](#2-支持的命令)
+- [3. 放置与运行](#3-放置与运行)
+- [4. 和-fastbootexe-的关系](#4-和-fastbootexe-的关系)
+- [5. 构建](#5-构建)
+- [6. 当前限制](#6-当前限制)
+- [7. 验证状态](#7-验证状态)
 
 ---
 
@@ -23,7 +55,7 @@ fastbootCmds ... all
 - `all`：操作当前所有 fastboot 设备。
 - `FASTBOOTCMD` / `FASTBOOTFLASH` 是可选前缀，大小写不敏感。
 
-### 示例（和你给的格式一致）
+### 示例
 
 ```bat
 fastbootCmds
@@ -71,7 +103,7 @@ fastbootCmds devices
 
 ## 3. 放置与运行
 
-`fastbootCmds.exe` 是 **64 位** 程序（当前系统为 64 位 Windows）。已复制到：
+`fastbootCmds.exe` 是 **64 位** 程序，把编译好的 exe 放到 PATH 中的任意目录即可，例如：
 
 ```text
 D:\platform-tools\fastbootCmds.exe
@@ -101,7 +133,7 @@ fastbootCmds FASTBOOTCMD getvar 1 3
 
 ## 5. 构建
 
-源码在本目录 `src/`。使用 64 位 MinGW-w64：
+源码在 `src/`。使用 64 位 MinGW-w64：
 
 ```bat
 build.bat
@@ -109,23 +141,21 @@ build.bat
 
 ### 用 VS Code 编译
 
-1. VS Code 打开文件夹：
-   ```text
-   D:\Backup\Documents\deepseek-harness\default-workspace\fastbootCmds
-   ```
+1. 用 VS Code 打开本仓库根目录。
 2. 安装扩展 **C/C++**（`ms-vscode.cpptools`，打开文件夹时会推荐）。
 3. 按 `Ctrl+Shift+B`，选择：
    ```text
    build fastbootCmds
    ```
    或菜单 **Terminal → Run Build Task**。
-4. 生成 `fastbootCmds.exe`，再复制到 `D:\platform-tools`。
+4. 生成 `fastbootCmds.exe`，再复制到 PATH 目录。
 5. 调试按 `F5`，使用 `.vscode/launch.json` 里的 `Debug fastbootCmds.exe`。
 
-`.vscode/tasks.json` 里已经配置好 `D:/mingw64/bin/g++.exe`、头文件路径和全部链接库。  
+`.vscode/tasks.json` 里默认配置为 `D:/mingw64/bin/g++.exe`、头文件路径和全部链接库。  
 如果你的 MinGW 不在 `D:\mingw64`，改 `tasks.json`、`c_cpp_properties.json`、`launch.json` 里的路径即可。
 
 如果 `-Werror` 因为编译器版本报警告，使用任务：
+
 ```text
 build fastbootCmds (no Werror)
 ```
@@ -151,14 +181,20 @@ g++ -std=c++17 -O2 -Wall -Wextra -Werror -Isrc ^
 - 依赖设备驱动为 WinUSB；如果 `fastbootCmds devices` 看不到设备，但 `fastboot.exe devices` 能看到，多半是驱动/接口类型问题。
 - 多设备操作时每个设备一个线程，输出最后按设备分组打印。
 - 没有实现 `format` / `update` / `flashall` / 动态分区管理。
-- 只在 Windows 上验证；未在真机 fastboot 上验证刷写（本机无设备）。
+- 只在 Windows 上验证；未在真机 fastboot 上验证刷写（开发机无设备）。
 
 ---
 
-## 7. 本机验证
+## 7. 验证状态
 
 - 64 位 MinGW g++ 编译通过（`-Wall -Wextra -Werror`）。
 - `fastbootCmds` 无参数时正确打印用法。
 - `fastbootCmds devices` 在无设备时返回明确错误。
 - USB 路径 helper 在真实 USB 设备上解析出 `usb:1D00:0-1.3` 等路径。
-- 未连接 fastboot 真机，实际 `getvar`/`flash` 尚需上机验证。
+- **尚未在真机 fastboot 上验证 `getvar` / `flash`**，欢迎反馈实际机型与结果。
+
+---
+
+## License
+
+[MIT](LICENSE)
